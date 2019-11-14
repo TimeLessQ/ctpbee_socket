@@ -1,11 +1,17 @@
 class Socket {
     constructor(option) {
         this.ws = null;
-        this.eventMap = {};
+        this.eventMap = {
+            heartbeat: function (data) {
+                console.log(data)
+            }
+        };
         //心跳
         this.heartbeatTimer = null;
         this.heartbeatInterval = option.heartbeat || 3000;
-        this.heartbeatMsg = option.heartbeatMsg || "hello world";
+        this.heartbeatMsg = option.heartbeatMsg || {
+            user: "wh"
+        };
         //重连
         this.reconnectTimer = null;
         this.reconnectInterval = option.reconnectInterval || 3000;
@@ -25,7 +31,7 @@ class Socket {
             clearInterval(this.heartbeatTimer);
             this._reconnect();
         }
-        this.ws.onmessage = (e) => {    
+        this.ws.onmessage = (e) => {
             let type = e.data.split(">")[0];
             let data = e.data.split(">")[1];
             let typeFun = this.eventMap[type];
@@ -51,6 +57,8 @@ class Socket {
     }
     open(callback) {
         this.ws.onopen = (e) => {
+            clearInterval(this.reconnectTimer);
+            this._heartbeat();
             callback && callback(e);
         }
     }
