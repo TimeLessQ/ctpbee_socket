@@ -13,20 +13,20 @@ let ws=new Socket({
 //连接成功
 ws.open(function(e){
     console.log(e)
+    ws.send("init",{
+        "name": "somewheve",
+        "user": "wh"//必须带有user
+    });
 });
 // 断开连接
-ws.close(function(e){
-    console.log(e)
-});
+// ws.close(function(e){
+//     console.log(e)
+// });
 // 连接错误
 ws.error(function(e){
     console.log(e)
 });
-// 发送数据
-ws.send("init",{data:"Hi~~~"});
-// 接收数据
-ws.message();
-// 对应事件的数据
+// 接收对应事件的数据
 ws.on("init",function(data){
     console.log(data);
 })

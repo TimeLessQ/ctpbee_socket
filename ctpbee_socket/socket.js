@@ -22,14 +22,13 @@ class Socket {
             this._heartbeat();
         }
         this.ws.onclose = () => {
-            console.log(9528)
             clearInterval(this.heartbeatTimer);
             this._reconnect();
         }
-        this.ws.onmessage = (e) => {
-            let type = e.split(">")[0];
-            let data = e.split(">")[1];
-            let typeFun = this.eventMap["type"];
+        this.ws.onmessage = (e) => {    
+            let type = e.data.split(">")[0];
+            let data = e.data.split(">")[1];
+            let typeFun = this.eventMap[type];
             typeFun(data);
         };
     }
@@ -52,7 +51,6 @@ class Socket {
     }
     open(callback) {
         this.ws.onopen = (e) => {
-            console.log("222")
             callback && callback(e);
         }
     }
